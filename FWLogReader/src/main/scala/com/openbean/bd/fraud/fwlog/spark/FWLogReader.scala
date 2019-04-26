@@ -4,6 +4,7 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 import com.openbean.bd.fraud.fwlog.common.{DateUtils, Logger}
+import com.openbean.bd.fraud.fwlog.model.FWLogColumns
 import org.apache.spark.sql.types.{IntegerType, LongType, StringType, StructField, StructType, TimestampType}
 import org.apache.spark.sql.{DataFrame, SparkSession, types}
 
@@ -23,17 +24,17 @@ trait FWLogReader extends Logger {
 
 class FWLogReaderCSV(implicit sparkSession: SparkSession) extends FWLogReader  {
   val fwlogSchema = StructType(Array(
-    StructField("timestamp", TimestampType, true),
-    StructField("a_party_countrycode", StringType, true),
-    StructField("a_party", StringType, true),
-    StructField("a_party_original_cc", StringType, true),
-    StructField("a_party_original", StringType, true),
-    StructField("b_party_countrycode", StringType, true),
-    StructField("b_party", StringType, true),
-    StructField("service_code", StringType, true),
-    StructField("status", StringType, true),
-    StructField("CNTDB_query_result", StringType, true),
-    StructField("overall_service_result", StringType, true)
+    StructField(FWLogColumns.timestamp.toString, TimestampType, true),
+    StructField(FWLogColumns.a_party_countrycode.toString, StringType, true),
+    StructField(FWLogColumns.a_party.toString, StringType, true),
+    StructField(FWLogColumns.a_party_original_cc.toString, StringType, true),
+    StructField(FWLogColumns.a_party_original.toString, StringType, true),
+    StructField(FWLogColumns.b_party_countrycode.toString, StringType, true),
+    StructField(FWLogColumns.b_party.toString, StringType, true),
+    StructField(FWLogColumns.service_code.toString, StringType, true),
+    StructField(FWLogColumns.status.toString, StringType, true),
+    StructField(FWLogColumns.CNTDB_query_result.toString, StringType, true),
+    StructField(FWLogColumns.overall_service_result.toString, StringType, true)
   ))
 
   override def getData(from: LocalDate, to: LocalDate, path: String): DataFrame =

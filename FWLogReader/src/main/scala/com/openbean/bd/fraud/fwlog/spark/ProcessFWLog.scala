@@ -1,20 +1,25 @@
 package com.openbean.bd.fraud.fwlog.spark
 
 import com.openbean.bd.fraud.fwlog.common.Logger
-import org.apache.spark.sql.{DataFrame}
+import com.openbean.bd.fraud.fwlog.model.FWLogColumns
+import org.apache.spark.sql.DataFrame
 import org.apache.spark.sql.functions._
 
 object ProcessFWLog extends Logger{
   def filterOriginCountryCode(cc: String, input: DataFrame) : DataFrame = {
-    input.filter(s"a_party_countrycode=${cc}")
+    input.filter(s"${FWLogColumns.a_party_countrycode.toString}=${cc}")
   }
 
   def getPreprocessed(input: DataFrame) :DataFrame = {
     input
-      .withColumn("features", struct("timestamp", "b_party_countrycode", "b_party", "status"))
-      .groupBy("a_party")
-      .agg(collect_list("features").alias("features"),
-        count("features").alias("count_calls"),
-        max("status").alias("fraud_label"))
+      .withColumn(FWLogColumns.features.toString,
+        struct(FWLogColumns.timestamp.toString,
+          FWLogColumns.b_party_countrycode.toString,
+          FWLogColumns.b_party.toString,
+          FWLogColumns.status.toString))
+      .groupBy(FWLogColumns.a_party.toString)
+      .agg(collect_list(FWLogColumns.features.toString).alias(FWLogColumns.features.toString),
+        count(FWLogColumns.features.toString).alias(FWLogColumns.count_calls.toString),
+        max(FWLogColumns.status.toString).alias(FWLogColumns.fraud_label.toString))
   }
 }
