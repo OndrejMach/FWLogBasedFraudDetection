@@ -4,18 +4,29 @@ import java.time.LocalDate
 
 import com.openbean.bd.fraud.fwlog.common.DateUtils
 import com.openbean.bd.fraud.fwlog.model.FWLogColumns
-import com.openbean.bd.fraud.fwlog.spark.{FWLogReader, FWLogReaderCSV, FWLogWriterJSON, ProcessFWLog}
+import com.openbean.bd.fraud.fwlog.spark.{CDRReaderParquet, FWLogReaderCSV, FWLogWriterJSON, ProcessFWLog, Reader}
 import org.apache.spark.sql.SparkSession
 
 object Test extends App {
 
   implicit val sparkSession = SparkSession.builder().appName("Test FWLog Reader").master("local[*]").getOrCreate()
 
-  println(FWLogColumns.a_party.toString)
+
+  val reader = new CDRReaderParquet()
+
+  val data = reader.getData("2019-02-02","/Users/ondrej.machacek/data/actual/cdr.parquet")
+
+  data.printSchema()
+
+
+
+
+
+  /*println(FWLogColumns.a_party.toString)
 
   println(DateUtils.getPaths(LocalDate.now(),LocalDate.now().plusDays(3)).mkString(";"))
 
-  val reader : FWLogReader = new FWLogReaderCSV()
+  val reader : Reader = new FWLogReaderCSV()
   val data = reader.getData("2019-04-17","/Users/ondrej.machacek/data/FWLog/CCSFWLog/")
 
   data.printSchema()
@@ -30,5 +41,9 @@ object Test extends App {
   val writer = new FWLogWriterJSON()
   writer.write(features, "/Users/ondrej.machacek/data/FWLog/features")
 
+  */
+
   sparkSession.stop()
+
+
 }
