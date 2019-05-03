@@ -3,11 +3,11 @@ package com.openbean.bd.fraud.fwlog.spark
 import com.openbean.bd.fraud.fwlog.common.Logger
 import org.apache.spark.sql.{DataFrame, SparkSession}
 
-trait FWLogWriter extends Logger {
+trait EventWriter extends Logger {
   def write(data : DataFrame, basepath: String) : Unit
 }
 
-class FWLogWriterJSON(implicit sparkSession: SparkSession) extends FWLogWriter {
+class EventWriterJSON(implicit sparkSession: SparkSession) extends EventWriter {
   override def write(data: DataFrame, basepath: String): Unit = {
     data
       .repartition(1)
@@ -17,7 +17,7 @@ class FWLogWriterJSON(implicit sparkSession: SparkSession) extends FWLogWriter {
 
 }
 
-class FWLogWriterParquet(implicit sparkSession: SparkSession) extends FWLogWriter{
+class EventWriterParquet(implicit sparkSession: SparkSession) extends EventWriter{
   override def write(data: DataFrame, basepath: String): Unit = {
     data
       .repartition(1)

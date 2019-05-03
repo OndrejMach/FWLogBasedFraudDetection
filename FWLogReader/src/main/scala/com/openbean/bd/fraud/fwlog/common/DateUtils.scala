@@ -1,6 +1,6 @@
 package com.openbean.bd.fraud.fwlog.common
 
-import java.time.{LocalDate, LocalDateTime}
+import java.time.{LocalDateTime}
 import java.time.temporal.ChronoUnit
 
 object DateUtils {
@@ -24,14 +24,14 @@ object DateUtils {
 
   def getPathsHour(from: LocalDateTime, to: LocalDateTime, path: String =""): Seq[String] = {
     for {i <- 0.toLong to ChronoUnit.HOURS.between(from, to)}
-      yield getPartitionedPathDay(from.plusHours(i), path)
+      yield getPartitionedPathHour(from.plusHours(i), path)
   }
 
   def validDate(date: LocalDateTime) = {
-    !LocalDateTime.now.isAfter(date)
+    date.isBefore(LocalDateTime.now())
   }
 
   def validDateRange(from: LocalDateTime, to:LocalDateTime) = {
-    from.isBefore(to)
+    to.isAfter(from) || to.isEqual(from)
   }
 }

@@ -19,7 +19,9 @@ class CDRReaderParquet(implicit sparkSession: SparkSession) extends CDRReader {
       logger.error(s"Invalid dates ${from.toString}, ${to.toString}")
       sparkSession.emptyDataFrame
     } else {
-      sparkSession.read.option("basePath", path).parquet(DateUtils.getPathsHour(from, to.minusHours(OFFSET)): _*)
+      val paths = DateUtils.getPathsHour(from, to, path)
+      logger.info(s"Reading paths ${paths.mkString(",")}")
+      sparkSession.read.option("basePath", path).parquet(paths: _*)
     }
   }
 
@@ -28,7 +30,9 @@ class CDRReaderParquet(implicit sparkSession: SparkSession) extends CDRReader {
       logger.error(s"Invalid date ${date.toString}")
       sparkSession.emptyDataFrame
     } else {
-      sparkSession.read.option("basePath", path).parquet(DateUtils.getPartitionedPathDay(date, path))
+      val partition = DateUtils.getPartitionedPathDay(date, path)
+      logger.info(s"Reading path ${partition}")
+      sparkSession.read.option("basePath", path).parquet(partition)
     }
   }
 

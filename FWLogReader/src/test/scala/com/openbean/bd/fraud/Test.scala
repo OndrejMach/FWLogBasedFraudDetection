@@ -1,23 +1,33 @@
 package com.openbean.bd.fraud
 
-import java.time.LocalDate
+import java.time.{LocalDate, LocalDateTime}
+import java.time.format.DateTimeFormatter
 
 import com.openbean.bd.fraud.fwlog.common.DateUtils
 import com.openbean.bd.fraud.fwlog.model.FWLogColumns
-import com.openbean.bd.fraud.fwlog.spark.{CDRReaderParquet, FWLogReaderCSV, FWLogWriterJSON, ProcessFWLog, Reader}
+import com.openbean.bd.fraud.fwlog.spark.{CDRReader, CDRReaderParquet, EventWriter, EventWriterJSON, FWLogReaderCSV, ProcessFWLog, Processor, Reader}
 import org.apache.spark.sql.SparkSession
 
 object Test extends App {
 
+
+  val DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH")
+
+  val from = LocalDateTime.parse("2019-05-03-00", DATE_FORMAT)
+  val to = LocalDateTime.parse("2019-05-03-06", DATE_FORMAT)
+  val path = "/Users/ondrej.machacek/data/actual/cdr.parquet/"
+  val pathFWLog = "/Users/ondrej.machacek/data/FWLog/CCSFWLog"
+
+
   implicit val sparkSession = SparkSession.builder().appName("Test FWLog Reader").master("local[*]").getOrCreate()
 
+  val cdrReader = new CDRReaderParquet()
+  val fwLogReader = new FWLogReaderCSV()
+  val resultWriter = new EventWriterJSON()
 
-  val reader = new CDRReaderParquet()
-
-  val data = reader.getData("2019-02-02","/Users/ondrej.machacek/data/actual/cdr.parquet")
-
-  data.printSchema()
-
+  val processor = new Processor(fwLogReader, cdrReader, resultWriter)
+  println(from.toString + to.toString + path)
+  processor.run(from, to, path, pathFWLog)
 
 
 

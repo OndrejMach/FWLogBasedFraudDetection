@@ -33,7 +33,7 @@ class FWLogReaderCSV(implicit sparkSession: SparkSession) extends FWLogReader {
       .option("basePath", path)
       .option("delimiter", "|")
       .schema(fwlogSchema)
-      .csv(DateUtils.getPathsDay(from, to): _*)
+      .csv(DateUtils.getPathsDay(from, to, path): _*)
 
   override def getData(date: LocalDateTime, path: String): DataFrame =
     sparkSession.read
