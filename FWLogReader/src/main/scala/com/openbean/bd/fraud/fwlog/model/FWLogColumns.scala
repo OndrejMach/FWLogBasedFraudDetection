@@ -19,6 +19,13 @@ object FWLogColumns extends Enumeration {
   val features = Value(11)
   val count_calls = Value(12)
   val fraud_label = Value(13)
+  val timestamp_hour = Value(14)
+  val timestamp_day = Value(15)
+  val timestamp_month = Value(16)
+  val count_allowed = Value(17)
+  val count_blocked = Value(18)
+  val records = Value(19)
+  val count_records = Value(20)
 }
 
 object CDRColumns extends Enumeration {

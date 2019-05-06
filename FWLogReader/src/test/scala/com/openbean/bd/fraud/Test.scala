@@ -21,23 +21,25 @@ object Test extends App {
 
   implicit val sparkSession = SparkSession.builder().appName("Test FWLog Reader").master("local[*]").getOrCreate()
 
-  val cdrReader = new CDRReaderParquet()
+  /*val cdrReader = new CDRReaderParquet()
   val fwLogReader = new FWLogReaderCSV()
   val resultWriter = new EventWriterJSON()
 
   val processor = new Processor(fwLogReader, cdrReader, resultWriter)
   println(from.toString + to.toString + path)
-  processor.run(from, to, path, pathFWLog)
+  processor.run(from, to, path, pathFWLog)*/
 
 
 
 
-  /*println(FWLogColumns.a_party.toString)
+  //println(FWLogColumns.a_party.toString)
 
-  println(DateUtils.getPaths(LocalDate.now(),LocalDate.now().plusDays(3)).mkString(";"))
+  //println(DateUtils.getPaths(LocalDate.now(),LocalDate.now().plusDays(3)).mkString(";"))
+
+  val date = LocalDateTime.parse("2019-05-03-00", DATE_FORMAT)
 
   val reader : Reader = new FWLogReaderCSV()
-  val data = reader.getData("2019-04-17","/Users/ondrej.machacek/data/FWLog/CCSFWLog/")
+  val data = reader.getData(date,"/Users/ondrej.machacek/data/actual/fwlogs/")
 
   data.printSchema()
   data.show()
@@ -46,12 +48,13 @@ object Test extends App {
   filtered.show(false)
 
   val features = ProcessFWLog.getPreprocessed(filtered)
-  features.show(false)
+  data.printSchema()
+  features.filter("count_records>1").show(false)
 
-  val writer = new FWLogWriterJSON()
-  writer.write(features, "/Users/ondrej.machacek/data/FWLog/features")
+  //val writer = new EventWriterJSON()
+  //writer.write(features, "/Users/ondrej.machacek/data/FWLog/features")
 
-  */
+
 
   sparkSession.stop()
 
